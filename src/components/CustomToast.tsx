@@ -1,26 +1,21 @@
-import React, { useContext } from 'react';
-
-import ToastsContext from './../ToastContext';
-
+import React, { useContext, ReactNode } from 'react';
 import './CustomToast.css';
-
-import { Toast } from './../ToastContext';
+import ToastsContext from './../ToastContext';
+import { Toast, ContextData, ToastType } from './../ToastContext';
 
 interface Props {
   toast: Toast;
-  children?: any;
+  children?: ReactNode;
 }
 
 const CustomToast: React.FC<Props> = ({ toast, children }) => {
-  const { deleteToast } = useContext(ToastsContext);
-  const { type } = toast;
+  const { deleteToast }: ContextData = useContext(ToastsContext);
+  const { type = ToastType.Success, id } = toast;
+  const defaultText = `${type}: ${id}`;
 
   return (
-    <div className={`
-      custom-toast 
-      ${type === 'error' ? 'custom-toast--error' : 'custom-toast--success'}
-    `}>
-      {children}
+    <div className={`custom-toast custom-toast--${type}`}>
+      {children || defaultText}
       <i className="custom-toast__close-btn" onClick={() => deleteToast?.(toast)}>x</i>
     </div>
   );

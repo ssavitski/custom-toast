@@ -1,13 +1,14 @@
 import { useState, useCallback } from 'react';
+import { Toast, ContextData, DeleteToasts, LaunchToasts } from './../ToastContext';
 
-import { Toast } from './../ToastContext';
+type UseToasts = () => ContextData;
 
 const DELAY = 300000;
 
-const useToasts = () => {
+const useToasts: UseToasts = () => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const deleteToast: (toist: Toast) => void = useCallback(({ id, timeoutId }) => {
+  const deleteToast: DeleteToasts = useCallback(({ id, timeoutId }) => {
     setToasts((prevToasts) => {
       const tempToasts = [ ...prevToasts ];
       const index = tempToasts.findIndex(({ id: toastId }) => id === toastId);
@@ -23,13 +24,13 @@ const useToasts = () => {
   // eslint-disable-next-line
   }, []);
 
-  const launchToast = useCallback((type: string) => {
+  const launchToast: LaunchToasts = useCallback((type) => {
     const id = Math.random().toString();
     const newToast: Toast = { type, id };
     const timeoutId = setTimeout(() => {
       deleteToast(newToast);
-      console.log('Delete toast', id);
     }, DELAY);
+
     newToast.timeoutId = timeoutId;
     setToasts((prevToasts) => ([
       ...prevToasts,

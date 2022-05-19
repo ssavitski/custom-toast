@@ -1,24 +1,28 @@
-import React, { createContext } from 'react';
-
+import React, { createContext, ReactNode } from 'react';
 import useToasts from './hooks/useToasts';
 
-interface ContextData {
-  toasts?: Toast[];
-  deleteToast?: (toast: Toast) => void;
-  launchToast?: (type: string) => void;
-}
-
-const ToastsContext = createContext<ContextData>({});
-
-interface Props {
-  children: any;
+export type LaunchToasts = (type: ToastType) => void;
+export type DeleteToasts = (toist: Toast) => void;
+export enum ToastType {
+  Success='success',
+  Error='error',
 }
 
 export interface Toast {
-  type: string;
   id: string;
+  type: ToastType;
   timeoutId?: ReturnType<typeof setTimeout>;
 }
+export interface ContextData {
+  toasts?: Toast[];
+  deleteToast?: DeleteToasts;
+  launchToast?: LaunchToasts;
+}
+interface Props {
+  children: ReactNode;
+}
+
+const ToastsContext = createContext<ContextData>({});
 
 export const ToastsContextProvider: React.FC<Props> = ({ children }) => {
   const contextData: ContextData = useToasts();
